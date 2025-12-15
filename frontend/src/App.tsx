@@ -1,29 +1,30 @@
-import { gql } from "@apollo/client/core";
-import { useQuery } from "@apollo/client/react";
-
-const TEST_QUERY = gql`
-  query {
-    organizations {
-      id
-      name
-    }
-  }
-`;
+import { useState } from "react";
+import { AppLayout } from "./layouts/AppLayout";
+import { OrganizationSelector } from "./components/OrganizationSelector";
 
 function App() {
-  const { data, loading, error } = useQuery(TEST_QUERY);
-
-  if (loading) return <div className="p-6">Loading…</div>;
-  if (error)
-    return <div className="p-6 text-red-600">Error: {error.message}</div>;
+  const [organizationId, setOrganizationId] = useState<string | null>(null);
 
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Organizations</h1>
-      <pre className="bg-gray-100 p-4 rounded">
-        {JSON.stringify(data, null, 2)}
-      </pre>
-    </div>
+    <AppLayout>
+      <div className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Organization
+          </label>
+          <OrganizationSelector
+            selectedOrgId={organizationId}
+            onSelect={setOrganizationId}
+          />
+        </div>
+
+        {organizationId && (
+          <div className="rounded border bg-white p-4 text-sm text-gray-600">
+            Selected organization ID: {organizationId}
+          </div>
+        )}
+      </div>
+    </AppLayout>
   );
 }
 
