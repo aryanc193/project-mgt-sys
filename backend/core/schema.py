@@ -47,4 +47,101 @@ class Query(graphene.ObjectType):
     def resolve_tasks(self, info, project_id):
         return Task.objects.filter(project_id=project_id)
 
-schema = graphene.Schema(query=Query)
+class CreateProject(graphene.Mutation):
+    class Arguments:
+        organization_id = graphene.ID(required=True)
+        name = graphene.String(required=True)
+        description = graphene.String()
+        status = graphene.String()
+        due_date = graphene.Date()
+
+    project = graphene.Field(ProjectType)
+
+    def mutate(self, info, organization_id, name, description=None, status=None, due_date=None):
+        organization = Organization.objects.get(id=organization_id)
+
+        project = Project.objects.create(
+            organization=organization,
+            name=name,
+            description=description or "",
+            status=status or "ACTIVE",
+            due_date=due_date,
+        )
+        return CreateProject(project=project)
+
+class UpdateProjectStatus(graphene.Mutation):
+    class Arguments:
+        project_id = graphene.ID(required=True)
+        status = graphene.String(required=True)
+
+    project = graphene.Field(ProjectType)
+
+    def mutate(self, info, project_id, status):
+        project = Project.objects.get(id=project_id)
+        project.status = status
+        project.save()
+
+        return UpdateProjectStatus(project=project)
+
+class CreateTask(graphene.Mutation):
+    class Arguments:
+        project_id = graphene.ID(required=True)
+        title = graphene.String(required=True)
+        description = graphene.String()
+        status = graphene.String()
+        assignee_email = graphene.String()
+
+    task = graphene.Field(TaskType)
+
+    def mutate(self, info, project_id, title, description=None, status=None, assignee_email=None):
+        project = Project.objects.get(id=project_id)
+
+        task = Task.objects.create(
+            project=project,
+            title=title,
+            description=description or "",
+            status=status or "TODO",
+            assignee_email=assignee_email or "",
+        )
+        return CreateTask(task=task)
+
+class UpdateTaskStatus(graphene.Mutation):
+    class Arguments:
+        task_id = graphene.ID(required=True)
+        status = graphene.String(required=True)
+
+    task = graphene.Field(TaskType)
+
+    def mutate(self, info, task_id, status):
+        task = Task.objects.get(id=task_id)
+        task.status = status
+        task.save()
+
+        return UpdateTaskStatus(task=task)
+
+class AddTaskComment(graphene.Mutation):
+    class Arguments:
+        task_id = graphene.ID(required=True)
+        content = graphene.String(required=True)
+        author_email = graphene.String(required=True)
+
+    comment = graphene.Field(TaskCommentType)
+
+    def mutate(self, info, task_id, content, author_email):
+        task = Task.objects.get(id=task_id)
+
+        comment = TaskComment.objects.create(
+            task=task,
+            content=content,
+            author_email=author_email,
+        )
+        return AddTaskComment(comment=comment)
+
+class Mutation(graphene.ObjectType):
+    create_project = CreateProject.Field()
+    update_project_status = UpdateProjectStatus.Field()
+    create_task = CreateTask.Field()
+    update_task_status = UpdateTaskStatus.Field()
+    add_task_comment = AddTaskComment.Field()
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
