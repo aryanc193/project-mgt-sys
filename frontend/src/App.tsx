@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AppLayout } from "./layouts/AppLayout";
 import { OrganizationSelector } from "./components/OrganizationSelector";
+import { ProjectList } from "./components/ProjectList";
 
 function App() {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
@@ -16,6 +17,12 @@ function App() {
             selectedOrgId={organizationId}
             onSelect={setOrganizationId}
           />
+          {organizationId && (
+            <div className="mt-8">
+              <h2 className="text-lg font-semibold mb-4">Projects</h2>
+              <ProjectList organizationId={organizationId} />
+            </div>
+          )}
         </div>
 
         {organizationId && (
