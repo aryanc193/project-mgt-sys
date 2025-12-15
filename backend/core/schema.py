@@ -1,5 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType
+from graphql import GraphQLError
 
 from .models import Organization, Project, Task, TaskComment
 
@@ -58,7 +59,9 @@ class CreateProject(graphene.Mutation):
     project = graphene.Field(ProjectType)
 
     def mutate(self, info, organization_id, name, description=None, status=None, due_date=None):
-        organization = Organization.objects.get(id=organization_id)
+        organization = Organization.objects.filter(id=organization_id).first()
+        if not organization:
+            raise GraphQLError("Organization not found")
 
         project = Project.objects.create(
             organization=organization,
@@ -69,6 +72,7 @@ class CreateProject(graphene.Mutation):
         )
         return CreateProject(project=project)
 
+
 class UpdateProjectStatus(graphene.Mutation):
     class Arguments:
         project_id = graphene.ID(required=True)
@@ -77,7 +81,10 @@ class UpdateProjectStatus(graphene.Mutation):
     project = graphene.Field(ProjectType)
 
     def mutate(self, info, project_id, status):
-        project = Project.objects.get(id=project_id)
+        project = Project.objects.filter(id=project_id).first()
+        if not project:
+            raise GraphQLError("Project not found")
+
         project.status = status
         project.save()
 
@@ -94,7 +101,9 @@ class CreateTask(graphene.Mutation):
     task = graphene.Field(TaskType)
 
     def mutate(self, info, project_id, title, description=None, status=None, assignee_email=None):
-        project = Project.objects.get(id=project_id)
+        project = Project.objects.filter(id=project_id).select_related("organization").first()
+        if not project:
+            raise GraphQLError("Project not found")
 
         task = Task.objects.create(
             project=project,
@@ -113,7 +122,10 @@ class UpdateTaskStatus(graphene.Mutation):
     task = graphene.Field(TaskType)
 
     def mutate(self, info, task_id, status):
-        task = Task.objects.get(id=task_id)
+        task = Task.objects.filter(id=task_id).first()
+        if not task:
+            raise GraphQLError("Task not found")
+
         task.status = status
         task.save()
 
@@ -128,7 +140,9 @@ class AddTaskComment(graphene.Mutation):
     comment = graphene.Field(TaskCommentType)
 
     def mutate(self, info, task_id, content, author_email):
-        task = Task.objects.get(id=task_id)
+        task = Task.objects.filter(id=task_id).first()
+        if not task:
+            raise GraphQLError("Task not found")
 
         comment = TaskComment.objects.create(
             task=task,
@@ -136,6 +150,7 @@ class AddTaskComment(graphene.Mutation):
             author_email=author_email,
         )
         return AddTaskComment(comment=comment)
+
 
 class Mutation(graphene.ObjectType):
     create_project = CreateProject.Field()
