@@ -12,13 +12,18 @@ type Project = {
 type Props = {
   organizationId: string;
   onSelectProject: (id: string) => void;
+  selectedProjectId?: string | null;
 };
 
-export const ProjectList: FC<Props> = ({ organizationId, onSelectProject }) => {
+export const ProjectList: FC<Props> = ({
+  organizationId,
+  onSelectProject,
+  selectedProjectId,
+}) => {
   const { data, loading, error } = useQuery<{
     projects: Project[];
   }>(PROJECTS_QUERY, {
-    variables: { organizationId, onSelectProject },
+    variables: { organizationId },
   });
 
   if (loading) return <div>Loading projects...</div>;
@@ -34,7 +39,13 @@ export const ProjectList: FC<Props> = ({ organizationId, onSelectProject }) => {
         <div
           key={project.id}
           onClick={() => onSelectProject(project.id)}
-          className="flex items-center justify-between rounded border bg-white p-4"
+          className={`cursor-pointer rounded border p-4 transition
+    ${
+      project.id === selectedProjectId
+        ? "bg-gray-100 border-gray-400"
+        : "bg-white hover:bg-gray-50"
+    }
+  `}
         >
           <div>
             <div className="font-medium">{project.name}</div>

@@ -14,43 +14,51 @@ function App() {
 
   return (
     <AppLayout>
-      <div className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div className="space-y-10">
+        {/* Organization */}
+        <section className="rounded-lg border bg-white p-6">
+          <label className="block text-sm font-medium text-gray-700 mb-3">
             Organization
           </label>
           <OrganizationSelector
             selectedOrgId={organizationId}
             onSelect={setOrganizationId}
           />
-          {organizationId && (
-            <div className="mt-8 space-y-4">
-              <h2 className="text-lg font-semibold">Projects</h2>
-              <CreateProjectForm organizationId={organizationId} />
-              <ProjectList
-                organizationId={organizationId}
-                onSelectProject={setProjectId}
-              />
-            </div>
-          )}
-          {projectId && (
-            <div className="mt-8 space-y-4">
-              <h3 className="text-md font-semibold">Tasks</h3>
-              <CreateTaskForm projectId={projectId} />
-              <TaskList projectId={projectId} onSelectTask={setTaskId} />
-            </div>
-          )}
-          {taskId && (
-            <div className="mt-8">
-              <TaskComments taskId={taskId} />
-            </div>
-          )}
-        </div>
+        </section>
 
+        {/* Projects */}
         {organizationId && (
-          <div className="rounded border bg-white p-4 text-sm text-gray-600">
-            Selected organization ID: {organizationId}
-          </div>
+          <section className="rounded-lg border bg-white p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Projects</h2>
+            </div>
+
+            <CreateProjectForm organizationId={organizationId} />
+
+            <ProjectList
+              organizationId={organizationId}
+              onSelectProject={setProjectId}
+              selectedProjectId={projectId}
+            />
+          </section>
+        )}
+
+        {/* Tasks */}
+        {projectId && (
+          <section className="rounded-lg border bg-white p-6 space-y-4">
+            <h3 className="text-md font-semibold">Tasks</h3>
+
+            <CreateTaskForm projectId={projectId} />
+
+            <TaskList projectId={projectId} onSelectTask={setTaskId} />
+          </section>
+        )}
+
+        {/* Comments */}
+        {taskId && (
+          <section className="rounded-lg border bg-white p-6">
+            <TaskComments taskId={taskId} />
+          </section>
         )}
       </div>
     </AppLayout>

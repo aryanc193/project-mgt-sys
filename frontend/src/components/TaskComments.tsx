@@ -21,7 +21,9 @@ type Props = {
 export function TaskComments({ taskId }: Props) {
   const { data, loading } = useQuery<CommentsResult>(COMMENTS_QUERY, {
     variables: { taskId },
+    notifyOnNetworkStatusChange: true,
   });
+
   const [error, setError] = useState<string | null>(null);
   const [addComment] = useMutation(ADD_COMMENT_MUTATION);
   const [content, setContent] = useState("");
@@ -51,7 +53,13 @@ export function TaskComments({ taskId }: Props) {
     <div className="space-y-3">
       <div className="text-sm font-medium">Comments</div>
 
-      {loading && <div className="text-sm text-gray-500">Loading...</div>}
+      {loading && !data && (
+        <div className="text-sm text-gray-500">Loading...</div>
+      )}
+
+      {data && data.taskComments.length === 0 && (
+        <div className="text-sm text-gray-500">No comments yet.</div>
+      )}
 
       {data?.taskComments.map((c) => (
         <div key={c.id} className="rounded border bg-white p-3 text-sm">
