@@ -3,9 +3,11 @@ import { AppLayout } from "./layouts/AppLayout";
 import { OrganizationSelector } from "./components/OrganizationSelector";
 import { ProjectList } from "./components/ProjectList";
 import { CreateProjectForm } from "./components/CreateProjectForm";
+import { TaskList } from "./components/TaskList";
 
 function App() {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState<string | null>(null);
 
   return (
     <AppLayout>
@@ -22,13 +24,25 @@ function App() {
             <div className="mt-8 space-y-4">
               <h2 className="text-lg font-semibold">Projects</h2>
               <CreateProjectForm organizationId={organizationId} />
-              <ProjectList organizationId={organizationId} />
+              <ProjectList
+                organizationId={organizationId}
+                onSelectProject={setProjectId}
+              />
             </div>
           )}
           {organizationId && (
             <div className="mt-8">
               <h2 className="text-lg font-semibold mb-4">Projects</h2>
-              <ProjectList organizationId={organizationId} />
+              <ProjectList
+                organizationId={organizationId}
+                onSelectProject={setProjectId}
+              />
+            </div>
+          )}
+          {projectId && (
+            <div className="mt-8">
+              <h3 className="mb-3 text-md font-semibold">Tasks</h3>
+              <TaskList projectId={projectId} />
             </div>
           )}
         </div>

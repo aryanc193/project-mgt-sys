@@ -11,13 +11,14 @@ type Project = {
 
 type Props = {
   organizationId: string;
+  onSelectProject: (id: string) => void;
 };
 
-export const ProjectList: FC<Props> = ({ organizationId }) => {
+export const ProjectList: FC<Props> = ({ organizationId, onSelectProject }) => {
   const { data, loading, error } = useQuery<{
     projects: Project[];
   }>(PROJECTS_QUERY, {
-    variables: { organizationId },
+    variables: { organizationId, onSelectProject },
   });
 
   if (loading) return <div>Loading projects...</div>;
@@ -32,7 +33,8 @@ export const ProjectList: FC<Props> = ({ organizationId }) => {
       {data!.projects.map((project) => (
         <div
           key={project.id}
-          className="flex items-center justify-between rounded border bg-white p-4"
+          onClick={() => onSelectProject(project.id)}
+          className="flex items-center justify-between rounded border bg-white p-4 overflow-hidden"
         >
           <div>
             <div className="font-medium">{project.name}</div>
