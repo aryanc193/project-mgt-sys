@@ -38,6 +38,10 @@ class Query(graphene.ObjectType):
         TaskType,
         project_id=graphene.ID(required=True)
     )
+    task_comments = graphene.List(
+        TaskCommentType,
+        task_id=graphene.ID(required=True)
+    )
 
     def resolve_organizations(self, info):
         return Organization.objects.all()
@@ -47,6 +51,9 @@ class Query(graphene.ObjectType):
 
     def resolve_tasks(self, info, project_id):
         return Task.objects.filter(project_id=project_id)
+
+    def resolve_task_comments(self, info, task_id):
+        return TaskComment.objects.filter(task_id=task_id)
 
 class CreateProject(graphene.Mutation):
     class Arguments:
