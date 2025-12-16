@@ -22,13 +22,18 @@ export function TaskComments({ taskId }: Props) {
   const { data, loading } = useQuery<CommentsResult>(COMMENTS_QUERY, {
     variables: { taskId },
   });
-
+  const [error, setError] = useState<string | null>(null);
   const [addComment] = useMutation(ADD_COMMENT_MUTATION);
   const [content, setContent] = useState("");
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!content.trim()) return;
+    if (!content.trim()) {
+      setError("Comment cannot be empty");
+      return;
+    }
+
+    setError(null);
 
     addComment({
       variables: {
@@ -51,12 +56,11 @@ export function TaskComments({ taskId }: Props) {
       {data?.taskComments.map((c) => (
         <div key={c.id} className="rounded border bg-white p-3 text-sm">
           <div className="text-gray-800">{c.content}</div>
-          <div className="text-xs text-gray-500 mt-1">
-            {c.authorEmail}
-          </div>
+          <div className="text-xs text-gray-500 mt-1">{c.authorEmail}</div>
         </div>
       ))}
 
+      {error && <div className="text-sm text-red-600">{error}</div>}
       <form onSubmit={submit} className="flex gap-2">
         <input
           className="flex-1 rounded border px-3 py-2 text-sm"

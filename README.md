@@ -1,7 +1,7 @@
 # Mini Project Management System
 
 ## Overview
-A multi-tenant project management system built with Django + GraphQL and React + Apollo.
+A multi-tenant project management system built with Django + GraphQL and React + Apollo, focused on clean architecture and predictable data flows.
 
 ## Design Goals
 - Demonstrate clean multi-tenant data modeling without overengineering
@@ -38,9 +38,9 @@ npm run dev
 ```
 
 ## Architecture Notes
-- Multi-tenancy enforced at query and mutation level
-- GraphQL chosen for predictable data access
-- Apollo cache used instead of manual state management
+- Multi-tenancy enforced explicitly at query and mutation boundaries
+- GraphQL used for predictable, client-driven data access
+- Apollo Client cache preferred over manual global state
   
 ## Key Technical Decisions
 
@@ -64,6 +64,7 @@ GraphQL was chosen to:
 - No authentication (out of scope)
 - Minimal validation to optimize delivery time
 - CSRF disabled only for GraphQL endpoint
+- UI prioritizes clarity and usability over visual complexity
 
 ## Future Improvements
 - User authentication and permissions

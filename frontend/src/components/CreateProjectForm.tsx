@@ -3,7 +3,7 @@ import { useMutation } from "@apollo/client/react";
 import { CREATE_PROJECT_MUTATION } from "../graphql/createProject";
 import { PROJECTS_QUERY } from "../graphql/projects";
 
-// TYPES (MUST BE ABOVE)
+// TYPES
 
 type Project = {
   id: string;
@@ -30,6 +30,7 @@ type Props = {
 
 export function CreateProjectForm({ organizationId }: Props) {
   const [name, setName] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const [createProject, { loading }] = useMutation<CreateProjectResult>(
     CREATE_PROJECT_MUTATION,
@@ -59,33 +60,40 @@ export function CreateProjectForm({ organizationId }: Props) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim()) return;
+
+    if (!name.trim()) {
+      setError("Project name is required");
+      return;
+    }
+
+    setError(null);
 
     createProject({
-      variables: {
-        organizationId,
-        name,
-      },
+      variables: { organizationId, name },
     });
 
     setName("");
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
-      <input
-        className="flex-1 rounded border px-3 py-2"
-        placeholder="New project name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <button
-        type="submit"
-        disabled={loading}
-        className="rounded bg-black px-4 py-2 text-white disabled:opacity-50 cursor-pointer"
-      >
-        Add
-      </button>
-    </form>
+    <div className="space-y-1">
+      {error && <div className="text-sm text-red-600">{error}</div>}
+
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <input
+          className="flex-1 rounded border px-3 py-2"
+          placeholder="New project name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+        >
+          Add
+        </button>
+      </form>
+    </div>
   );
 }
