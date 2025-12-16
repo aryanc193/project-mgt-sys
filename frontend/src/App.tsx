@@ -5,10 +5,12 @@ import { ProjectList } from "./components/ProjectList";
 import { CreateProjectForm } from "./components/CreateProjectForm";
 import { TaskList } from "./components/TaskList";
 import { CreateTaskForm } from "./components/CreateTaskForm";
+import { TaskComments } from "./components/TaskComments";
 
 function App() {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [projectId, setProjectId] = useState<string | null>(null);
+  const [taskId, setTaskId] = useState<string | null>(null);
 
   return (
     <AppLayout>
@@ -35,7 +37,12 @@ function App() {
             <div className="mt-8 space-y-4">
               <h3 className="text-md font-semibold">Tasks</h3>
               <CreateTaskForm projectId={projectId} />
-              <TaskList projectId={projectId} />
+              <TaskList projectId={projectId} onSelectTask={setTaskId} />
+            </div>
+          )}
+          {taskId && (
+            <div className="mt-8">
+              <TaskComments taskId={taskId} />
             </div>
           )}
         </div>

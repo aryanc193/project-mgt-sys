@@ -15,9 +15,10 @@ type TasksQueryResult = {
 
 type Props = {
   projectId: string;
+  onSelectTask: (id: string) => void;
 };
 
-export const TaskList: FC<Props> = ({ projectId }) => {
+export const TaskList: FC<Props> = ({ projectId, onSelectTask }) => {
   const { data, loading, error } = useQuery<TasksQueryResult>(TASKS_QUERY, {
     variables: { projectId },
   });
@@ -34,13 +35,12 @@ export const TaskList: FC<Props> = ({ projectId }) => {
       {data!.tasks.map((task) => (
         <div
           key={task.id}
-          className="flex items-center justify-between rounded border bg-white p-3"
+          onClick={() => onSelectTask(task.id)}
+          className="cursor-pointer rounded border bg-white p-3 hover:bg-gray-50"
         >
           <div>
             <div className="font-medium">{task.title}</div>
-            <div className="text-sm text-gray-500">
-              Status: {task.status}
-            </div>
+            <div className="text-sm text-gray-500">Status: {task.status}</div>
           </div>
         </div>
       ))}
