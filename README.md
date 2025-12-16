@@ -30,6 +30,8 @@ pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 ```
+- NOTE: Create a `.env` file in the backend directory using `.env.example` as reference.
+
 ### Frontend
 ```bash
 cd frontend
