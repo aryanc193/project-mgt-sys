@@ -33,7 +33,7 @@ export function OrganizationSelector({ selectedOrgId, onSelect }: Props) {
 
   return (
     <select
-      className="border rounded px-3 py-2"
+      className="border rounded px-3 py-2 cursor-pointer"
       value={selectedOrgId ?? ""}
       onChange={(e) => onSelect(e.target.value)}
     >

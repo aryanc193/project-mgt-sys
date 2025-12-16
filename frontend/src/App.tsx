@@ -30,15 +30,6 @@ function App() {
               />
             </div>
           )}
-          {organizationId && (
-            <div className="mt-8">
-              <h2 className="text-lg font-semibold mb-4">Projects</h2>
-              <ProjectList
-                organizationId={organizationId}
-                onSelectProject={setProjectId}
-              />
-            </div>
-          )}
           {projectId && (
             <div className="mt-8">
               <h3 className="mb-3 text-md font-semibold">Tasks</h3>

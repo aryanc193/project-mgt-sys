@@ -29,12 +29,12 @@ export const ProjectList: FC<Props> = ({ organizationId, onSelectProject }) => {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 cursor-pointer">
       {data!.projects.map((project) => (
         <div
           key={project.id}
           onClick={() => onSelectProject(project.id)}
-          className="flex items-center justify-between rounded border bg-white p-4 overflow-hidden"
+          className="flex items-center justify-between rounded border bg-white p-4"
         >
           <div>
             <div className="font-medium">{project.name}</div>
