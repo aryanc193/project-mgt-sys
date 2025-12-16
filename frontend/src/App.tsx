@@ -4,6 +4,7 @@ import { OrganizationSelector } from "./components/OrganizationSelector";
 import { ProjectList } from "./components/ProjectList";
 import { CreateProjectForm } from "./components/CreateProjectForm";
 import { TaskList } from "./components/TaskList";
+import { CreateTaskForm } from "./components/CreateTaskForm";
 
 function App() {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
@@ -31,8 +32,9 @@ function App() {
             </div>
           )}
           {projectId && (
-            <div className="mt-8">
-              <h3 className="mb-3 text-md font-semibold">Tasks</h3>
+            <div className="mt-8 space-y-4">
+              <h3 className="text-md font-semibold">Tasks</h3>
+              <CreateTaskForm projectId={projectId} />
               <TaskList projectId={projectId} />
             </div>
           )}
