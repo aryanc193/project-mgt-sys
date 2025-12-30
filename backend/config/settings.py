@@ -27,6 +27,7 @@ INSTALLED_APPS = [
 
     # Local
     "core",
+    "rest_framework"
 ]
 
 # MIDDLEWARE
